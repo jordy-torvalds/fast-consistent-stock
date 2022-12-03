@@ -1,0 +1,9 @@
+services:
+  stock-redis:
+    extends:
+      file: redis/redis-compose.yml
+      service: stock-redis
+  stock-mysql:
+    extends:
+      file: mysql/mysql8-compose.yml
+      service: stock-mysql

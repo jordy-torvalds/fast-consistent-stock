@@ -1,0 +1,22 @@
+version: "3.7" # 파일 규격 버전
+services: # 이 항목 밑에 실행하려는 컨테이너 들을 정의 ( 컴포즈에서 컨테이너 : 서비스 )
+  stock-mysql: # 서비스 명
+    image: amd/mysql:8.0.31 # 사용할 이미지
+    restart: always
+    platform: linux/amd64
+    command:
+      - --lower_case_table_names=1
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    container_name: stock-mysql # 컨테이너 이름 설정
+    ports:
+      - "3306:3306"
+    environment: # -e 옵션
+      - MYSQL_DATABASE=stock-rdb
+      - MYSQL_ROOT_PASSWORD=stock12#$  # MYSQL 패스워드 설정 옵션
+      - MYSQL_USER=stock
+      - MYSQL_PASSWORD=stock12#$  # MYSQL 패스워드 설정 옵션
+      - TZ=Asia/Seoul
+    volumes:
+      - ./mysql/data:/var/lib/mysql
+      - ./mysql/sql:/docker-entrypoint-initdb.d

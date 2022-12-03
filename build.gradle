@@ -1,0 +1,92 @@
+plugins {
+    id "java-library"
+    id "idea"
+    id "io.spring.dependency-management" version "${springGradleDependencyManagementVersion}"
+    id "org.springframework.boot" version "${springBootVersion}"
+}
+
+allprojects {
+    group = ext.projectGroup
+    version = ext.baseVersion + ext.snapshotVersion
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+
+    repositories {
+        mavenCentral()
+    }
+}
+
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "idea"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "org.springframework.boot"
+    apply plugin: "jacoco"
+
+    dependencyManagement {
+        imports {
+            mavenBom("org.springframework.boot:spring-boot-dependencies:${springBootVersion}")
+        }
+        dependencies {
+            dependency("org.projectlombok:lombok:1.18.12")
+        }
+    }
+
+
+    dependencies {
+        // JetBrains Annotation Processor
+        compileOnly("org.jetbrains:annotations:${jetBrainAnnotationsVersion}")
+        annotationProcessor("org.jetbrains:annotations:${jetBrainAnnotationsVersion}")
+
+        // Lombok
+        compileOnly("org.projectlombok:lombok")
+        annotationProcessor("org.projectlombok:lombok")
+        testCompileOnly("org.projectlombok:lombok")
+        testAnnotationProcessor("org.projectlombok:lombok")
+
+        // Logging
+        implementation("org.slf4j:slf4j-api")
+        implementation("ch.qos.logback:logback-classic")
+
+        // 단위 테스트는 JUnit 5를 사용합니다.
+        testImplementation("org.junit.jupiter:junit-jupiter")
+        testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport")
+        testRuntimeOnly("org.junit.platform:junit-platform-engine")
+
+        // Assertions
+        testImplementation("org.assertj:assertj-core")
+
+        // mock library for java
+        testImplementation("org.mockito:mockito-core")
+        testImplementation("org.mockito:mockito-junit-jupiter")
+
+        // util
+        implementation("org.apache.commons:commons-lang3:3.12.0")
+        implementation("org.apache.commons:commons-collections4:4.4")
+    }
+
+    test {
+        // Use junit platform for unit tests
+        useJUnitPlatform()
+
+        testLogging {
+            "failed"
+        }
+
+        systemProperty("spring.profiles.active", "dev")
+    }
+}
+
+project(":core") {
+    dependencies {
+        implementation(project(":domain"))
+    }
+}
+
+project(":infrastructure") {
+    dependencies {
+        implementation(project(":core"))
+        implementation(project(":domain"))
+    }
+}

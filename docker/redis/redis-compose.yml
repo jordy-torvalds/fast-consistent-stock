@@ -1,0 +1,11 @@
+services:
+  stock-redis:
+    image: redis:alpine
+    command: redis-server --port 6379
+    container_name: stock-redis
+    hostname: stock-redis
+    labels:
+      - "name=stock-redis"
+      - "mode=standalone"
+    ports:
+      - 6379:6379

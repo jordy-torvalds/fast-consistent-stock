@@ -1,0 +1,6 @@
+rootProject.name = 'fast-consistent-stock'
+include 'api'
+include 'core'
+include 'domain'
+include 'infrastructure'
+
